@@ -12,10 +12,41 @@ datasource db {
   provider = "postgresql"
 }
 
+model Item {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  currentStock Int @default(0)
+  lowStock Int @default(5)
+  customItem String?
+  sales     Sales[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([createdAt])
+}
+
 model Sales {
-  id                String   @id @db.Uuid
-  name              String   @unique
-  currentStock      Int      @default(0) @map("current_stock")
-  lowStockThreshold Int      @default(5) @map("low_stock_threshold")
-  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+  id        String  @id @default(cuid())
+  quantity  Int     @default(1)
+  unitPrice Decimal @db.Decimal(10, 2)
+  totalAmount    Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  itemId    String?
+  items     Item?    @relation(fields: [itemId], references: [id])
+
+  @@index([createdAt])
+}
+
+model Expenses {
+  id          String  @id @default(cuid())
+  category    String
+  amount      String
+  description String? @db.Text()
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([createdAt])
 }
