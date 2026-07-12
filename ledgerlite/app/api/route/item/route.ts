@@ -8,7 +8,7 @@ export async function GET() {
 
     if (!allProduct) {
         return NextResponse.json({
-            success: false, message: "Product NotFound"
+            success: false, message: "Products NotFound"
         }, { status: 404 })
     }
 
