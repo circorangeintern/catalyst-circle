@@ -39,7 +39,7 @@ export async function POST(req: NextRequest){
                         throw new Error(`insufficient stock; available stock is ${product.currentStock}`)
                     }
 
-                    await tsx.item.update({
+                     tsx.item.update({
                         where: {id: itemId},
                         data: {
                             currentStock: {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest){
                         }
                     })
 
-                    const sale = await tsx.sales.create({
+                    const sale =  tsx.sales.create({
                         data: {
                             id: id ? id : undefined,
                             quantity: Number(quantity),
