@@ -1,76 +1,13 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import {
-  Home,
-  ShoppingBag,
-  ReceiptText,
-  Package,
-  Download,
-  User2,
-  Settings,
-  Menu,
-  X,
-  User,
-} from "lucide-react";
-
-export default function SideNav() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-  const [avatar, setAvatar] = useState("");
-
-  // navigation items for the sidebar
-  const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: <Home size={18} /> },
-    { href: "/sales", label: "Sales", icon: <ReceiptText size={18} /> },
-    { href: "/expense", label: "Expense", icon: <ShoppingBag size={18} /> },
-    { href: "/inventory", label: "Inventory", icon: <Package size={18} /> },
-    {
-      href: "/export-summary",
-      label: "Export Summary",
-      icon: <Download size={18} />,
-    },
-  ];
-  //  navigation items for the utility section
-  const utilityItems = [
-    { href: "/settings", label: "Settings", icon: <Settings size={18} /> },
-    { href: "/profile", label: "Profile", icon: <User2 size={18} /> },
-  ];
-
+export default function Loading() {
   return (
-    // The main container for the sidebar and the overlay
-    <div className="relative">
-      {/* Navigation button */}
-      <button
-        type="button"
-        className="absolute top-3 left-2 z-50 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-100 bg-white text-slate-800  transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400  md:hidden cursor-pointer"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open navigation"
-      >
-        <Menu size={20} />
-      </button>
-
-      <div
-        className={`fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-        onClick={() => setIsOpen(false)}
-      />
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-62 max-w-70 transform overflow-y-auto border-r border-slate-200 bg-white px-5 py-6 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between gap-3">
-          {/* Logo */}
-          <div className="hidden md:block">
+    <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(11,122,117,0.12),_transparent_48%),linear-gradient(180deg,_#f8fbfb_0%,_#ffffff_100%)] px-5">
+      <div className="w-full flex flex-col items-center justify-center max-w-md rounded-[28px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_25px_80px_-35px_rgba(11,122,117,0.45)] backdrop-blur md:p-7">
+        <div className="flex justify-center">
+          <div className="flex flex-col justify-center items-center gap-4">
+            {/* logo */}
             <div>
               <svg
-                width="167"
-                height="33"
+                className="w-30 h-10 md:w-40 md:"
                 viewBox="0 0 167 33"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -107,96 +44,35 @@ export default function SideNav() {
                 </defs>
               </svg>
             </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
+                Finance OS
+              </p>
+            </div>
           </div>
-          <div className="md:hidden">
-            {avatar ? (
-              <div className="w-12 h-12  rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
-                <Image
-                  className="rounded-full object-cover w-12 h-12"
-                  src={avatar}
-                  alt="profile-photo"
-                  width={50}
-                  height={50}
-                  unoptimized
-                />
-              </div>
-            ) : (
-              <div className=" rounded-full bg-linear-to-br from-teal-500 to-teal-700 flex items-center justify-center">
-                <User className="w-12 h-12  text-white" />
-              </div>
-            )}
-          </div>
-          {/* Close button */}
-          <button
-            type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 md:hidden cursor-pointer"
-            onClick={() => setIsOpen(false)}
-            aria-label="Close navigation"
-          >
-            <X size={18} />
-          </button>
         </div>
-        <div className="md:hidden border-b border-gray-300 py-2">
-          <h3 className="text-sm font-medium text-gray-900">businessName</h3>
-          <p className="text-xs text-gray-700">userName</p>
+
+        <div className="mt-6 space-y-2 text-center">
+          <p className="text-base font-semibold text-slate-900">
+            Preparing your workspace
+          </p>
+          <p className="text-sm text-slate-500">
+            Syncing your dashboard and inventory data…
+          </p>
         </div>
-        {/* Navigation */}
-        <nav className="mt-5 md:mt-10">
-          <ul className="space-y-2 md:space-y-4 ">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${
-                      isActive
-                        ? "bg-brand-primary/15 text-brand-primary"
-                        : "text-slate-700 hover:bg-slate-100 hover:text-brand-primary"
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <span
-                      className={`${isActive ? "text-brand-primary" : "text-slate-500"}`}
-                    >
-                      {item.icon}
-                    </span>
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          {/* Utility Items */}
-          <div className="mt-5 md:mt-10 border-t border-slate-200 pt-6 ">
-            <ul className="space-y-2 md:space-y-4">
-              {utilityItems.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${
-                        isActive
-                          ? "bg-brand-primary/15 text-brand-primary"
-                          : "text-slate-700 hover:bg-slate-100 hover:text-brand-primary"
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <span
-                        className={`${isActive ? "text-brand-primary" : "text-slate-500"}`}
-                      >
-                        {item.icon}
-                      </span>
-                      <span>{item.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+
+        <div className="mt-6 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="absolute inset-y-0 left-[-35%] w-[35%] rounded-full bg-linear-to-r from-[#0B7A75] via-[#51a7a2] to-[#0B7A75] opacity-95 [animation:loading-bar_1.6s_ease-in-out_infinite]" />
           </div>
-        </nav>
-      </aside>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between text-[11px] font-medium uppercase tracking-[0.24em] text-slate-400 gap-3">
+          <span>Loading</span>
+          <span>just a moment</span>
+        </div>
+      </div>
     </div>
   );
 }

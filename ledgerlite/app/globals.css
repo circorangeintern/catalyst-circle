@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 @theme {
+  --animate-left-to-right: left-to-right 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-bar {
+  0% {
+    transform: translateX(-140%);
+  }
+
+  100% {
+    transform: translateX(420%);
+  }
+}
+
+@theme {
   /* Increase contrast of default gray and slate scales natively for white background */
   --color-slate-200: #e2e8f0;
   --color-slate-300: #cbd5e1;

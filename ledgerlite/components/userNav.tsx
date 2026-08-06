@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Bell } from "lucide-react";
-import Logout from "@/components/logout";
+import { Bell,User } from "lucide-react";
+import Link from "next/link";
 
 export default function UserNav({
   name = "",
@@ -15,7 +15,7 @@ export default function UserNav({
   const [userName, setUserName] = useState(name);
   const [bizName, setBizName] = useState(buisnessName);
   const [profile, setProfile] = useState<any>(null);
-  const [avatar, setAvatar] = useState("/profilePhoto.png");
+  const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
     // Sync state if props change
@@ -54,7 +54,7 @@ export default function UserNav({
     <div>
       <section>
         {/* userNav user navigation profile details */}
-        <div className="w-full border-b border-gray-100 ">
+        <div className=" w-full border-b border-gray-100 ">
           {/* user profile */}
           <div className="p-2">
             <div className="flex justify-between items-center px-4 py-2">
@@ -64,32 +64,41 @@ export default function UserNav({
 
               <div className="flex items-end gap-2">
                 <div className="bg-gray-100 p-2 rounded-full ">
-                  <Bell className="h-5 w-5 text-brand-primary-[#0b7a75] dark:text-gray-400" />
+                  <Link href="/notifications">
+                    <Bell className="h-6 w-6 text-brand-primary " />
+                  </Link>
                 </div>
                 <div className=""></div>
                 <div className="flex flex-col">
                   {/* business name */}
                   <span className="hidden md:block text-sm font-medium text-gray-900">
-                     {bizName}  
+                    {bizName}
                   </span>
                   {/* username */}
                   <span className="hidden md:block text-xs text-gray-500">
-                     {userName}
+                    {userName}
                   </span>
                 </div>
-                <div className="w-10 h-10  rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
-                  <Image
-                    className="rounded-full object-cover w-10 h-10"
-                    src={avatar}
-                    alt="user profile photo"
-                    width={40}
-                    height={40}
-                    unoptimized
-                  />
+                {/* Profile Image Display */}
+
+                <div className="hidden md:block">
+                  {avatar ? (
+                    <div className="w-10 h-10  rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
+                      <Image
+                        className="rounded-full object-cover w-10 h-10"
+                        src={avatar}
+                        alt="profile-photo"
+                        width={40}
+                        height={40}
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className=" rounded-full bg-linear-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                      <User className="w-10 h-10  text-white" />
+                    </div>
+                  )}
                 </div>
-                {/* <div>
-                  <Logout user={profile} />
-                </div> */}
               </div>
             </div>
           </div>

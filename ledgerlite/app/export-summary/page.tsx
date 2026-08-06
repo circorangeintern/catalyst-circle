@@ -4,29 +4,31 @@ import { useMemo } from "react";
 import { Download, ArrowUpRight, ArrowDownRight, DollarSign } from "lucide-react";
 import SideNav from "@/components/sideNav";
 import UserNav from "@/components/userNav";
+import LedgerLiteExportSummary from "@/components/exportsummary";
+
 
 export default function ExportSummary() {
-  const totalSales = 24800;
-  const totalExpense = 9200;
-  const totalProfit = useMemo(() => totalSales - totalExpense, [totalSales, totalExpense]);
+  // const totalSales = 24800;
+  // const totalExpense = 9200;
+  // const totalProfit = useMemo(() => totalSales - totalExpense, [totalSales, totalExpense]);
 
-  const summaryItems = [
-    {
-      label: "Total sales",
-      value: `$${totalSales.toLocaleString()}`,
-      icon: <ArrowUpRight className="h-5 w-5 text-[#0b7a75]" />,
-    },
-    {
-      label: "Total expense",
-      value: `$${totalExpense.toLocaleString()}`,
-      icon: <ArrowDownRight className="h-5 w-5 text-[#0b7a75]" />,
-    },
-    {
-      label: "Total profit",
-      value: `$${totalProfit.toLocaleString()}`,
-      icon: <DollarSign className="h-5 w-5 text-[#0b7a75]" />,
-    },
-  ];
+  // const summaryItems = [
+  //   {
+  //     label: "Total sales",
+  //     value: `$${totalSales.toLocaleString()}`,
+  //     icon: <ArrowUpRight className="h-5 w-5 text-[#0b7a75]" />,
+  //   },
+  //   {
+  //     label: "Total expense",
+  //     value: `$${totalExpense.toLocaleString()}`,
+  //     icon: <ArrowDownRight className="h-5 w-5 text-[#0b7a75]" />,
+  //   },
+  //   {
+  //     label: "Total profit",
+  //     value: `$${totalProfit.toLocaleString()}`,
+  //     icon: <DollarSign className="h-5 w-5 text-[#0b7a75]" />,
+  //   },
+  // ];
 
  
 
@@ -34,13 +36,13 @@ export default function ExportSummary() {
     <div>
       <div>
         <SideNav />
-        <div className="ml-0 md:ml-70 sm:ml-0">
+        <div className="ml-0 md:ml-60 sm:ml-0">
           <UserNav />
         </div>
 
-        <main className="min-h-screen ml-0 md:ml-72 p-6 bg-slate-50">
+        <main className=" ml-0 md:ml-62 p-6 ">
           <div className="max-w-6xl mx-auto space-y-8">
-            <section className="rounded-4xl border border-slate-200 bg-white p-8 shadow-sm">
+            {/* <section className="rounded-4xl border border-slate-200 bg-white p-8 shadow-sm">
               <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#0b7a75]">
@@ -104,6 +106,9 @@ export default function ExportSummary() {
                   </p>
                 </div>
               </div>
+            </section> */}
+            <section>
+               <LedgerLiteExportSummary />
             </section>
           </div>
         </main>

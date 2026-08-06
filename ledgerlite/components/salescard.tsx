@@ -45,7 +45,13 @@ export default function SalesCard({
   // Editing Modal State
   const [editingSale, setEditingSale] = useState<any | null>(null);
 
-  const displaySales = sales;
+  const [localSales, setLocalSales] = useState<any[]>(sales);
+
+  useEffect(() => {
+    setLocalSales(sales);
+  }, [sales]);
+
+  const displaySales = localSales;
 
   // Handle Delete Action
   async function handleDelete(id: string) {
@@ -53,7 +59,10 @@ export default function SalesCard({
       return;
     }
 
+    const previousSales = [...localSales];
+    setLocalSales(prev => prev.filter(item => item.id !== id));
     setDeletingId(id);
+
     try {
       const response = await fetch(`/api/routes/sales/${id}`, {
         method: "DELETE",
@@ -69,10 +78,12 @@ export default function SalesCard({
         toast.success("Sale deleted successfully!");
         router.refresh();
       } else {
+        setLocalSales(previousSales);
         toast.error(result.message || "Failed to delete sale.");
       }
     } catch (error) {
       console.error("Delete error:", error);
+      setLocalSales(previousSales);
       toast.error("Network error: Could not delete sale.");
     } finally {
       setDeletingId(null);
@@ -127,7 +138,7 @@ export default function SalesCard({
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-[#0b7a75]/10 px-3 py-1 text-sm font-semibold text-[#0b7a75]">
+                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary">
                       {item.quantity}
                     </span>
                   </td>
@@ -145,7 +156,7 @@ export default function SalesCard({
                         type="button"
                         onClick={() => setSelectedSale(item)}
                         disabled={isDeleting}
-                        className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-[#0b7a75]/5 hover:text-[#0b7a75] disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-brand-primary/5 hover:text-brand-primary disabled:opacity-50 cursor-pointer"
                         title="View details"
                       >
                         <Eye className="h-4 w-4" />
@@ -188,8 +199,8 @@ export default function SalesCard({
       )}
 
       {/* Footer Page Indicators */}
-      <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-center">
-        <Pagination currentPage={currentPage} totalPages={totalPages} pageSize={pageSize} />
+      <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center">
+        <Pagination currentPage={currentPage} totalPages={totalPages} pageSize={pageSize} totalEntries={totalSales} />
       </div>
 
       {/* Dynamic View Transaction Details Modal */}
@@ -257,7 +268,7 @@ export default function SalesCard({
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-100">
                   <span className="text-sm text-slate-500 font-medium">Total Amount</span>
-                  <span className="text-base font-bold text-[#0b7a75]">₦{total.toLocaleString()}</span>
+                  <span className="text-base font-bold text-brand-primary">₦{total.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-sm text-slate-500">Time Logged</span>
@@ -424,7 +435,7 @@ function EditSaleModal({
                 id="edit-item-name"
                 name="itemId"
                 defaultValue={sale.itemId || products[0]?.id}
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-[#0b7a75]"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-primary"
                 disabled={loadingProducts || isPending}
               >
                 {products.map((p) => (
@@ -440,7 +451,7 @@ function EditSaleModal({
                 type="text"
                 defaultValue={sale.customItemName || sale.itemName || ""}
                 placeholder="Enter custom item name"
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-[#0b7a75]"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-primary"
                 disabled={isPending}
                 required
               />
@@ -460,7 +471,7 @@ function EditSaleModal({
                 defaultValue={qtyValue}
                 placeholder="0"
                 min={1}
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-[#0b7a75]"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-primary"
                 disabled={isPending}
                 required
               />
@@ -478,7 +489,7 @@ function EditSaleModal({
                 defaultValue={unitPriceValue}
                 placeholder="0"
                 min={0}
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-[#0b7a75]"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-primary"
                 disabled={isPending}
                 required
               />
@@ -499,7 +510,7 @@ function EditSaleModal({
               <button
                 type="submit"
                 disabled={isPending}
-                className="inline-flex justify-center items-center gap-2 rounded-2xl bg-[#0b7a75] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#0b7a75]/20 transition duration-200 hover:bg-[#09615e] cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                className="inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition duration-200 hover:bg-brand-primary cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isPending ? (
                   <>

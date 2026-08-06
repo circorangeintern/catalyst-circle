@@ -30,12 +30,11 @@ export async function proxy(req: NextRequest){
                 success: false, message: `${reason}, log in`
             }, {status: 401})
         }
-
+//checks
         const url = req.nextUrl.clone()
         url.pathname = "/signin"
         url.searchParams.set("reason", reason)
         url.searchParams.set("error", "Unauthorized")
-
         return NextResponse.redirect(url)
         
     }

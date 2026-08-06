@@ -17,7 +17,7 @@ export default function HomeNav() {
                 <Link href="/">
                   <div>
                     <svg
-                      className="w-30 h-10 md:w-40 md:"
+                      className="w-40 h-10 md:w-40 md:"
                       viewBox="0 0 167 33"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +133,7 @@ export default function HomeNav() {
                         <a
                           href="/#features"
                           onClick={() => setOpen(false)}
-                          className="block px-3 py-2 rounded-md hover:bg-slate-50"
+                          className="block px-3 py-2 border-b border-gray-300 rounded-md hover:bg-slate-50"
                         >
                           Features
                         </a>
@@ -142,7 +142,7 @@ export default function HomeNav() {
                         <a
                           href="/#how-it-works"
                           onClick={() => setOpen(false)}
-                          className="block px-3 py-2 rounded-md hover:bg-slate-50"
+                          className="block px-3 py-2 rounded-md border-b border-gray-300 hover:bg-slate-50"
                         >
                           How it works
                         </a>
@@ -151,7 +151,7 @@ export default function HomeNav() {
                         <a
                           href="/#testimonials"
                           onClick={() => setOpen(false)}
-                          className="block px-3 py-2 rounded-md hover:bg-slate-50"
+                          className="block px-3 py-2 rounded-md border-b border-gray-300 hover:bg-slate-50"
                         >
                           Testimonials
                         </a>
@@ -160,25 +160,25 @@ export default function HomeNav() {
                         <a
                           href="/#faq"
                           onClick={() => setOpen(false)}
-                          className="block px-3 py-2 rounded-md hover:bg-slate-50"
+                          className="block px-3 py-2 rounded-md border-b border-gray-300 hover:bg-slate-50"
                         >
                           FAQ
                         </a>
                       </li>
                     </ul>
 
-                    <div className="mt-4 flex flex-col gap-2">
+                    <div className="mt-4 flex flex-col gap-3 py-8">
                       <Link
                         href="/signin"
                         onClick={() => setOpen(false)}
-                        className="block text-center rounded-full border border-[#0B7A75] px-4 py-2 text-sm text-[#0B7A75]"
+                        className="block text-center rounded-full border border-[#0B7A75] px-4 py-4 text-sm text-[#0B7A75]"
                       >
                         Log In
                       </Link>
                       <Link
                         href="/signup"
                         onClick={() => setOpen(false)}
-                        className="block text-center rounded-full bg-[#0B7A75] px-4 py-2 text-sm text-white"
+                        className="block text-center rounded-full bg-[#0B7A75] px-4 py-4 text-sm text-white"
                       >
                         Sign Up
                       </Link>

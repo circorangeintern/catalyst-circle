@@ -6,7 +6,6 @@ import SalesCard from "@/components/salescard";
 import { Search, Banknote, ReceiptText } from "lucide-react";
 import SearchForm from "./searchform";
 import UserNav from "./userNav";
-import Pagination from "./pagination";
 import { Suspense } from "react";
 
 export function SalesClient({
@@ -36,17 +35,16 @@ export function SalesClient({
         <div>
           <SideNav />
         </div>
-        <div className="ml-0 md:ml-70 sm:ml-0">
+        <div className="ml-0 md:ml-60 sm:ml-0">
           <UserNav name={name} buisnessName={buisnessName} />
         </div>
-        <main className="ml-0 md:ml-72 sm:ml-10 p-6">
+        <main className="ml-0 md:ml-62 sm:ml-10 p-6">
           <div className="border border-gray-300 my-5 rounded-4xl p-5 shadow-sm">
             <div>
               <h2 className="text-[#032523] text-2xl font-bold">Sales</h2>
 
               <p className="py-2 text-sm text-gray-700">
-                Manage your Sales in your dashboard and view it
-                anytime
+                Manage your Sales in your dashboard and view it anytime
               </p>
             </div>
 
@@ -63,10 +61,10 @@ export function SalesClient({
           <div className="">
             <div className="grid  gap-10 px-4 md:grid-cols-2 lg:grid-cols-4">
               <div
-                className="max-w-sm rounded-3xl border border-[#6DAFAC]  p-6 shadow-sm transition-all  hover:shadow-md hover:border-[#0b7a75] animate-in fade-in slide-in-from-left duration-500"
+                className="max-w-sm rounded-3xl border border-[#6DAFAC]  p-6 shadow-sm transition-all  hover:shadow-md hover:border-brand-primary animate-in fade-in slide-in-from-left duration-500"
                 style={{ animationFillMode: "both", animationDelay: "100ms" }}
               >
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0b7a75]/10 text-[#0b7a75] transition-transform duration-300 hover:scale-110">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary transition-transform duration-300 hover:scale-110">
                   <ReceiptText size={20} />
                 </div>
                 <p className="mt-5 text-xs uppercase tracking-[0.24em] text-slate-500 ">
@@ -79,14 +77,13 @@ export function SalesClient({
                   Yesterday: ₦{moneyInYesterday.toLocaleString()}
                 </p>
               </div>
-
             </div>
             {/* sales. history */}
             <aside
-              className="rounded-4xl my-10 border border-[#6DAFAC] bg-white/95 p-6 shadow-lg transition-all  hover:shadow-xl hover:border-[#0b7a75] animate-in fade-in slide-in-from-bottom duration-500"
+              className="rounded-4xl my-10 border border-[#6DAFAC] bg-white/95 p-6 shadow-lg transition-all  hover:shadow-xl hover:border-brand-primary animate-in fade-in slide-in-from-bottom duration-500"
               style={{ animationFillMode: "both", animationDelay: "200ms" }}
             >
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+              <h2 className="text-xl font-semibold text-[#032523] ">
                 Sales history
               </h2>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
@@ -94,30 +91,29 @@ export function SalesClient({
               </p>
               {sales.length === 0 ? (
                 <div className="flex flex-col items-center mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-[#0b7a75]/10 text-[#0b7a75]">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-primary/10 text-brand-primary">
                     <ReceiptText size={22} />
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-slate-900 ">
                     No sales records yet
                   </h3>
                   <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    When you save a sale, it will appear in this section for quick
-                    review.
+                    When you save a sale, it will appear in this section for
+                    quick review.
                   </p>
+                  <SalesForm />
                 </div>
               ) : (
-
                 <div className="py-5">
-                  
                   <Suspense fallback={<div>Loading sales...</div>}>
-                  <SalesCard
-                    sales={sales}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalSales={totalSales}
-                    pageSize={pageSize}
-                  />
-                   </Suspense>
+                    <SalesCard
+                      sales={sales}
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      totalSales={totalSales}
+                      pageSize={pageSize}
+                    />
+                  </Suspense>
                 </div>
               )}
             </aside>

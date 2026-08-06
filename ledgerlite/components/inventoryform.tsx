@@ -113,7 +113,7 @@ export default function InventoryForm() {
             style={{ animation: "modal-enter 240ms ease-out forwards" }}
           >
             <div className="transform rounded-3xl transition duration-300 ease-out scale-100 opacity-100">
-              <div className="flex items-start justify-between border-b border-slate-200 px-6 py-5 dark:border-zinc-800">
+              <div className="flex items-start justify-between border-b border-slate-200 px-6 py-5 ">
                 <div>
                   <h2 className="text-xl font-semibold">Add Product</h2>
                   <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
@@ -140,7 +140,7 @@ export default function InventoryForm() {
                 <div className="space-y-2">
                   <label
                     htmlFor="product"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                    className="block text-sm font-medium text-slate-700 "
                   >
                     Products
                   </label>
@@ -158,7 +158,7 @@ export default function InventoryForm() {
                 <div className="space-y-2">
                   <label
                     htmlFor="stock"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                    className="block text-sm font-medium text-slate-700 "
                   >
                     Quantity in Stock
                   </label>
@@ -177,7 +177,7 @@ export default function InventoryForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="cost"
-                      className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="block text-sm font-medium text-slate-700 "
                     >
                       ₦ Cost Price
                     </label>
@@ -196,7 +196,7 @@ export default function InventoryForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="price"
-                      className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="block text-sm font-medium text-slate-700 "
                     >
                       ₦ Selling Price
                     </label>
@@ -206,7 +206,7 @@ export default function InventoryForm() {
                       placeholder="0"
                       value={sellingPrice}
                       onChange={(e) => setSellingPrice(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-brand-primary[#0b7a75] focus:outline-none focus:ring-2 focus:ring-brand-primary/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-slate-100"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-brand-primary[#0b7a75] focus:outline-none focus:ring-2 focus:ring-brand-primary/20 "
                       disabled={submitting}
                       required
                     />
@@ -216,7 +216,7 @@ export default function InventoryForm() {
                 <div className="space-y-2">
                   <label
                     htmlFor="thresh"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                    className="block text-sm font-medium text-slate-700 "
                   >
                     Low stock threshold
                   </label>
@@ -226,7 +226,7 @@ export default function InventoryForm() {
                     placeholder="0"
                     value={threshhold}
                     onChange={(e) => setThreshold(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-brand-primary[#0b7a75] focus:outline-none focus:ring-2 focus:ring-brand-primary/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-slate-100"
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-brand-primary[#0b7a75] focus:outline-none focus:ring-2 focus:ring-brand-primary/20 "
                     disabled={submitting}
                     required
                   />

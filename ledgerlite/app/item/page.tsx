@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server"
-import { getCurrentUserId } from "../lib/authhelper"
+import { getCurrentUser, getCurrentUserId } from "../lib/authhelper"
 import prisma from "../lib/prisma"
 import ItemForm from "../components/itemForm"
 import { redirect } from "next/navigation"
 
 export default async function Item() {
-    const userId = await getCurrentUserId()
+    const user = await getCurrentUser()
 
-    if (!userId) {
+    if (!user) {
         redirect("/signin")
     }
-    const user = await prisma.user.findUnique({where: {id: userId}})
+    //const user = await prisma.user.findUnique({where: {id: userId}})
     const myname = user?.name
     const allItems = await prisma.item.findMany({
-        where: { userId },
+        where: { userId: user.id },
         take: 1
     })
     if (allItems) {

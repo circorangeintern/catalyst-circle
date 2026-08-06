@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Trash2, Eye, X, Loader2, Pencil } from "lucide-react";
 import { toast } from "react-hot-toast";
+import Pagination from "@/components/pagination";
 
 interface Item {
   id: string;
@@ -18,6 +19,7 @@ interface InventoryCardProps {
 }
 
 export default function InventoryCard({ items = [], onRefresh }: InventoryCardProps) {
+  const [localItems, setLocalItems] = useState<Item[]>(items);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [updating, setUpdating] = useState(false);
@@ -28,13 +30,37 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
   const [editStock, setEditStock] = useState("");
   const [editThreshold, setEditThreshold] = useState("");
 
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+
+  const totalEntries = localItems.length;
+  const totalPages = Math.ceil(totalEntries / pageSize) || 1;
+  const paginatedItems = localItems.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  useEffect(() => {
+    setLocalItems(items);
+    setPage(1); // Reset page to 1 on search / filters refresh
+  }, [items]);
+
+  useEffect(() => {
+    if (page > 1 && paginatedItems.length === 0) {
+      setPage(page - 1);
+    }
+  }, [paginatedItems.length, page]);
+
   // Handle Delete Action
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this product?")) {
       return;
     }
 
+    const previousItems = [...localItems];
+    setLocalItems(prev => prev.filter(item => item.id !== id));
     setDeletingId(id);
+
     try {
       const response = await fetch(`/api/routes/item/${id}`, {
         method: "DELETE",
@@ -49,10 +75,12 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
         toast.success("Product deleted successfully!");
         onRefresh?.();
       } else {
+        setLocalItems(previousItems);
         toast.error(result.message || "Failed to delete product.");
       }
     } catch (error) {
       console.error("Delete product error:", error);
+      setLocalItems(previousItems);
       toast.error("Network error: Could not delete product.");
     } finally {
       setDeletingId(null);
@@ -160,7 +188,7 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {items.map((item) => {
+            {paginatedItems.map((item) => {
               const isLowStock = item.currentStock <= item.lowStock;
               const formattedDate = new Date(item.createdAt).toLocaleDateString(undefined, {
                 year: "numeric",
@@ -174,7 +202,7 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
                     <p className="text-sm font-medium text-slate-900">{item.name}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-[#0b7a75]/10 px-3 py-1 text-sm font-semibold text-brand-primary">
+                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary">
                       {item.currentStock}
                     </span>
                   </td>
@@ -227,17 +255,20 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
         </table>
       </div>
 
-      {items.length === 0 && (
+      {localItems.length === 0 && (
         <div className="flex items-center justify-center px-6 py-12">
           <p className="text-sm text-slate-500">No inventory records found.</p>
         </div>
       )}
 
-      <div className="border-t border-slate-100 bg-slate-50 px-6 py-4">
-        <p className="text-xs text-slate-600">
-          Total records:{" "}
-          <span className="font-semibold text-slate-900">{items.length}</span>
-        </p>
+      <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center">
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalEntries={totalEntries}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Edit Product Modal */}
