@@ -45,6 +45,8 @@ export default function SalesCard({
   // Editing Modal State
   const [editingSale, setEditingSale] = useState<any | null>(null);
 
+  const [saleToDelete, setSaleToDelete] = useState<any | null>(null);
+
   const [localSales, setLocalSales] = useState<any[]>(sales);
 
   useEffect(() => {
@@ -53,12 +55,8 @@ export default function SalesCard({
 
   const displaySales = localSales;
 
-  // Handle Delete Action
-  async function handleDelete(id: string) {
-    if (!confirm("Are you sure you want to delete this sale? This will restore inventory stock counts for tracked items.")) {
-      return;
-    }
-
+  // Handle Delete Action Execution
+  async function executeDelete(id: string) {
     const previousSales = [...localSales];
     setLocalSales(prev => prev.filter(item => item.id !== id));
     setDeletingId(id);
@@ -172,7 +170,7 @@ export default function SalesCard({
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => setSaleToDelete(item)}
                         disabled={isDeleting}
                         className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-500 disabled:opacity-50 cursor-pointer"
                         title="Delete"
@@ -298,6 +296,51 @@ export default function SalesCard({
             router.refresh();
           }}
         />
+      )}
+
+      {/* Delete Sale Confirmation Modal */}
+      {saleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 animate-in fade-in duration-150">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300"
+            aria-hidden="true"
+            onClick={() => setSaleToDelete(null)}
+          />
+
+          <div
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl bg-white text-slate-900 shadow-2xl ring-1 ring-black/10 p-6"
+            style={{
+              animation: "modal-slide-in 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            }}
+          >
+            <h3 className="text-xl font-bold text-slate-900">Delete Sale Transaction?</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Are you sure you want to delete this sale? This will restore inventory stock counts for tracked items. This action cannot be undone.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={async () => {
+                  const id = saleToDelete.id;
+                  setSaleToDelete(null);
+                  await executeDelete(id);
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700 cursor-pointer"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete Sale
+              </button>
+              <button
+                type="button"
+                onClick={() => setSaleToDelete(null)}
+                className="w-full rounded-2xl border border-slate-200 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

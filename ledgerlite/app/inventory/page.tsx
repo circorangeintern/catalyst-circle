@@ -82,7 +82,7 @@ export default function Inventory() {
                 />
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <InventoryForm />
+                <InventoryForm onSaveSuccess={fetchItems} />
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function Inventory() {
                     When you save an inventory, it will appear in this section for quick review.
                   </p>
                   <div>
-                    <InventoryForm />
+                    <InventoryForm onSaveSuccess={fetchItems} />
                   </div>
                 </div>
               ) : (

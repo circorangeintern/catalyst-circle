@@ -53,10 +53,6 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
 
   // Handle Delete Action
   async function handleDelete(id: string) {
-    if (!confirm("Are you sure you want to delete this product?")) {
-      return;
-    }
-
     const previousItems = [...localItems];
     setLocalItems(prev => prev.filter(item => item.id !== id));
     setDeletingId(id);

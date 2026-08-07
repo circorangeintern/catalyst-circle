@@ -2,7 +2,6 @@ import SideNav from "@/components/sideNav";
 import UserNav from "@/components/userNav";
 import { getCurrentUserId } from "../lib/authhelper";
 import prisma from "../lib/prisma";
-import ProfileClient from "@/components/profileClient";
 import LedgerLiteProfile from "@/components/profile"
 import { redirect } from "next/navigation";
 
@@ -37,14 +36,13 @@ export default async function ProfilePage() {
           <UserNav name={user.name} buisnessName={user.buisnessName} />
         </div>
         <main className="ml-0 md:ml-62 sm:ml-10 p-6">
-          <LedgerLiteProfile />
-          {/* <ProfileClient
+          <LedgerLiteProfile
             initialName={user.name}
             initialEmail={user.email}
             initialBuisnessName={user.buisnessName}
             initialImage={user.image || ""}
             createdAt={user.createdAt.toISOString()}
-          /> */}
+          />
         </main>
       </div>
     </div>

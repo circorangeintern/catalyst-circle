@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 function getRelativeTime(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
-  
+
   // Guard for future times or minimal differences
   if (diffMs < 0) return "Just now";
 

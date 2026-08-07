@@ -161,7 +161,7 @@ export default function DashboardCard({
           <h4 className="text-sm text-slate-900 font-semibold">
             No recent activities.
           </h4>
-          <h4 className="text-xs text-slate-500">
+          <h4 className="text-center text-xs text-slate-500">
             Your sales and expense will appear here once you start recording transactions
           </h4>
 

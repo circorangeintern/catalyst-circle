@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --animate-left-to-right: left-to-right 1.5s ease-in-out infinite;
 }
@@ -103,4 +105,94 @@ input:focus, select:focus, textarea:focus {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ==========================================================================
+   Dark Theme System Style Overrides
+   ========================================================================== */
+
+.dark body {
+  background-color: #090d16 !important; /* Sleek deep slate dark mode background */
+  color: #f1f5f9 !important; /* Slate 100 white text */
+}
+
+/* Main card wrapper, sidebars, charts, and content panels */
+.dark div.bg-white,
+.dark main.bg-white,
+.dark aside.bg-white,
+.dark section.bg-white,
+.dark article.bg-white,
+.dark form.bg-white {
+  background-color: #111827 !important; /* Slate 900 backgrounds */
+  border-color: #1f2937 !important; /* Slate 800 borders */
+}
+
+/* Side navigation, settings sidebar container links */
+.dark aside, 
+.dark .bg-slate-50, 
+.dark .bg-gray-50,
+.dark .bg-slate-50\/60,
+.dark .bg-slate-100 {
+  background-color: #1f2937 !important; /* Slate 800 header/panel backgrounds */
+}
+
+/* Standard navigation labels active states */
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-gray-700,
+.dark .text-gray-600 {
+  color: #cbd5e1 !important; /* Slate 300 medium-bright gray text */
+}
+
+.dark .text-slate-500,
+.dark .text-gray-500 {
+  color: #94a3b8 !important; /* Slate 400 soft light-gray text */
+}
+
+/* Bright headers, active icons, table title text labels */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark .text-slate-900,
+.dark .text-gray-900 {
+  color: #f8fafc !important; /* Slate 50 ultra-bright headers */
+}
+
+/* Input Fields and Select Dropdowns */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1f2937 !important; /* Slate 800 fields */
+  color: #f8fafc !important; /* White value text */
+  border-color: #374151 !important; /* Slate 700 field borders */
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important; /* Slate 500 placeholder text */
+}
+
+/* Global Border overrides */
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .divide-slate-100,
+.dark .divide-slate-200,
+.dark .divide-gray-100 {
+  border-color: #1f2937 !important; /* Slate 800 custom border lines */
+  divide-color: #1f2937 !important;
+}
+
+/* Table rows highlighting and select transitions */
+.dark tr:hover {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Dynamic line dividers inside list tables */
+.dark .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1f2937 !important;
 }

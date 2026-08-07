@@ -1,17 +1,19 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
 import InventoryForm from "@/components/inventoryform";
 import { Package, Plus } from "lucide-react";
-import { getMetrics } from "@/app/lib/metrics";
 
-export default async function LowStockAlerts({
-  onViewInventory,
-}: {
-  onViewInventory?: () => void;
-}) {
-  const metrics = await getMetrics();
-  const lowstock = metrics?.lowStock || [];
-  const count = metrics?.allLowStockCount || 0;
+interface LowStockAlertsProps {
+  lowstock: any[];
+  count: number;
+}
+
+export default function LowStockAlerts({
+  lowstock = [],
+  count = 0,
+}: LowStockAlertsProps) {
+  const [showInventoryForm, setShowInventoryForm] = useState(false);
 
   return (
     <div className="border flex flex-col shadow-sm border-gray-200 rounded-2xl lg:px-5 md:py-5 my-5 bg-white w-full md:max-w-md">
@@ -54,10 +56,11 @@ export default async function LowStockAlerts({
         ))
       ) : (
         <div className="mx-auto w-full max-w-sm rounded-3x rounded-2xl   px-4  text-center">
-          
-
-          <div className="  my-2 flex justify-center">
-            <Package className="md:h-10 md:w-10 h-7 w-7 text-slate-800" strokeWidth={1.5} />
+          <div className="my-2 flex justify-center">
+            <Package
+              className="md:h-10 md:w-10 h-7 w-7 text-slate-800"
+              strokeWidth={1.5}
+            />
           </div>
 
           <p className=" text-xs md:text-md font-semibold text-slate-900">
@@ -68,14 +71,18 @@ export default async function LowStockAlerts({
           </p>
 
           <button
-            onClick={onViewInventory}
-            className="my-3 w-full rounded-full border border-slate-300 py-3 text-xs md:text-sm font-semibold text-teal-700 transition-colors hover:bg-slate-50"
+            onClick={() => setShowInventoryForm(true)}
+            className="my-3 w-full rounded-full border border-slate-300 py-3 text-xs md:text-sm font-semibold text-teal-700 transition-colors hover:bg-slate-50 cursor-pointer"
           >
             View Inventory
           </button>
+          <InventoryForm
+            open={showInventoryForm}
+            onOpenChange={setShowInventoryForm}
+            hideTrigger
+          />
         </div>
       )}
     </div>
   );
 }
-

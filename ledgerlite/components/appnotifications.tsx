@@ -11,11 +11,12 @@ import {
   Inbox,
   Download,
   Loader2,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-type NotificationKind = "low-stock" | "export-ready" | "restock";
+type NotificationKind = "low-stock" | "export-ready" | "restock" | "profile-update";
 
 interface AppNotification {
   id: string;
@@ -43,6 +44,10 @@ const KIND_STYLES: Record<
   },
   restock: {
     icon: <PackageCheck className="h-5 w-5 text-teal-600" />,
+    card: "border-slate-200 bg-white",
+  },
+  "profile-update": {
+    icon: <User className="h-5 w-5 text-teal-600" />,
     card: "border-slate-200 bg-white",
   },
 };
@@ -73,9 +78,8 @@ function NotificationCard({
   const style = KIND_STYLES[notification.kind];
 
   return (
-    <div className={`rounded-2xl border px-5 py-4 transition-all duration-200 ${style.card} ${
-      notification.read ? "opacity-60" : "opacity-100 ring-1 ring-teal-500/5 shadow-sm"
-    }`}>
+    <div className={`rounded-2xl border px-5 py-4 transition-all duration-200 ${style.card} ${notification.read ? "opacity-60" : "opacity-100 ring-1 ring-teal-500/5 shadow-sm"
+      }`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 shrink-0">{style.icon}</span>
@@ -140,6 +144,27 @@ function BackIconButton() {
   );
 }
 
+function getClientRelativeTime(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    if (diffMs < 0) return "Just now";
+
+    const diffMins = Math.floor(diffMs / (60 * 1000));
+    const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+    const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? "s" : ""} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    if (diffDays === 1) return "Yesterday";
+    return `${diffDays} days ago`;
+  } catch (e) {
+    return dateString;
+  }
+}
+
 export default function LedgerLiteNotifications() {
   const [readIds, setReadIds] = useLocalStorage<string[]>(
     "ledgerlite-read-notifications",
@@ -151,7 +176,7 @@ export default function LedgerLiteNotifications() {
   );
 
   // Fetch dynamic notification items from endpoints using React Query
-  const { data, isPending, error } = useQuery<{
+  const { data, isPending, error, refetch } = useQuery<{
     notifications: AppNotification[];
   }>({
     queryKey: ["notifications"],
@@ -164,10 +189,29 @@ export default function LedgerLiteNotifications() {
     },
   });
 
+  // Listen to profile update changes and update list in real-time
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      refetch();
+    };
+    window.addEventListener("ledgerlite-notification-new", handleUpdate);
+    return () => {
+      window.removeEventListener("ledgerlite-notification-new", handleUpdate);
+    };
+  }, [refetch]);
+
   const rawNotifications = data?.notifications ?? [];
 
+  // Load custom profile update notifications from localStorage
+  const [customNotifs] = useLocalStorage<AppNotification[]>(
+    "ledgerlite-custom-notifications",
+    []
+  );
+
+  const combinedNotifications = [...customNotifs, ...rawNotifications];
+
   // Filter out low stock alerts if notification settings are turned off
-  const filteredNotifications = rawNotifications.filter((n) => {
+  const filteredNotifications = combinedNotifications.filter((n) => {
     if (n.kind === "low-stock" && !lowStockAlertsEnabled) {
       return false;
     }
@@ -175,10 +219,14 @@ export default function LedgerLiteNotifications() {
   });
 
   // Calculate dynamic read states from LocalStorage syncing
-  const processedNotifications = filteredNotifications.map((n) => ({
-    ...n,
-    read: n.read || readIds.includes(n.id),
-  }));
+  const processedNotifications = filteredNotifications.map((n) => {
+    const isIso = n.timestamp.includes("-") && n.timestamp.includes("T");
+    return {
+      ...n,
+      timestamp: isIso ? getClientRelativeTime(n.timestamp) : n.timestamp,
+      read: n.read || readIds.includes(n.id),
+    };
+  });
 
   const markAllAsRead = () => {
     const allIds = processedNotifications.map((n) => n.id);

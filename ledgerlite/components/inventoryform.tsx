@@ -1,12 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { X, Plus, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { sendGAEvent } from "@next/third-parties/google";
 
-export default function InventoryForm() {
+interface InventoryFormProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+  onSaveSuccess?: () => void;
+}
+
+export default function InventoryForm({
+  open,
+  onOpenChange,
+  hideTrigger = false,
+  onSaveSuccess,
+}: InventoryFormProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
   const [product, setProduct] = useState("");
   const [stock, setStock] = useState("");
   const [costPrice, setCostPrice] = useState("");
@@ -16,8 +29,22 @@ export default function InventoryForm() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const isOpen = typeof open === "boolean" ? open : internalOpen;
 
+  useEffect(() => {
+    if (typeof open === "boolean" && open !== internalOpen) {
+      setInternalOpen(open);
+    }
+  }, [open, internalOpen]);
 
+  const handleOpen = (value: boolean) => {
+    if (typeof onOpenChange === "function") {
+      onOpenChange(value);
+    }
+    if (typeof open !== "boolean") {
+      setInternalOpen(value);
+    }
+  };
 
   function resetForm() {
     setProduct("");
@@ -74,8 +101,11 @@ export default function InventoryForm() {
       }
 
       toast.success("Product created successfully!");
-      setOpen(false);
+      handleOpen(false);
       resetForm();
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
       router.refresh();
     } catch (err: any) {
       console.error("Create product error:", err);
@@ -86,26 +116,30 @@ export default function InventoryForm() {
     }
   }
 
-  return (
-    <div className="px-4 py-6">
-      <div>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="inline-flex items-center justify-center rounded-full bg-brand-primary px-2 md:px-5 py-3  text-sm font-semibold text-white shadow-sm transition hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
-        >
-          <Plus size={18} />
-          <span className="px-1 ">Add</span>
-          Products
-        </button>
-      </div>
+  const wrapperClass = hideTrigger ? "" : "px-4 py-6";
 
-      {open && (
+  return (
+    <div className={wrapperClass}>
+      {!hideTrigger && (
+        <div>
+          <button
+            type="button"
+            onClick={() => handleOpen(true)}
+            className="inline-flex items-center justify-center rounded-full bg-brand-primary px-2 md:px-5 py-3  text-sm font-semibold text-white shadow-sm transition hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
+          >
+            <Plus size={18} />
+            <span className="px-1 ">Add</span>
+            Products
+          </button>
+        </div>
+      )}
+
+      {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             aria-hidden="true"
-            onClick={() => setOpen(false)}
+            onClick={() => handleOpen(false)}
           />
 
           <div
@@ -122,7 +156,7 @@ export default function InventoryForm() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={() => handleOpen(false)}
                   className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
                   aria-label="Close"
                 >
@@ -240,7 +274,7 @@ export default function InventoryForm() {
                     type="button"
                     onClick={() => {
                       resetForm();
-                      setOpen(false);
+                      handleOpen(false);
                     }}
                     disabled={submitting}
                     className="inline-flex justify-center rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 cursor-pointer disabled:opacity-50"
@@ -250,6 +284,13 @@ export default function InventoryForm() {
                   <button
                     type="submit"
                     disabled={submitting}
+                    onClick={() =>
+                      sendGAEvent({
+                        event: "button_clicked",
+                        value: "added_product",
+                      })
+                    }
+
                     className="inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                   >
                     {submitting ? (

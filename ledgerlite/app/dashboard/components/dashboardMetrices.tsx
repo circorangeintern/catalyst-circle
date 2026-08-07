@@ -9,17 +9,28 @@ const formatCurrency = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value || 0);
 
-const formatNumber = (value: number) =>
-  new Intl.NumberFormat("en-NG").format(value || 0);
+const Currency = (value: number) =>
+  new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+    notation: "compact"
+  }).format(value || 0);
 
-export default async function DashboardMetrics() {
-  const metrics = await getMetrics();
-
+  const million = 1000000
+  const formatNumber = (value: number) =>
+    new Intl.NumberFormat("en-NG").format(value || 0);
+  
+  export default async function DashboardMetrics() {
+    const metrics = await getMetrics();
+    
+    const moneyIn = Number(metrics?.TotalMoneyIn ?? 0)
   const stats = [
     {
       title: "Today's Profit",
-      value: formatCurrency(Number(metrics?.profitToday || 0)),
-      previousValue: `Yesterday: ${formatCurrency(Number(metrics?.profitYesterday || 0))}`,
+      value: moneyIn < million ? formatCurrency(Number(metrics?.profitToday || 0)
+     ) : Currency(Number(metrics?.profitToday || 0)),
+      previousValue: `Yesterday: ${moneyIn < million ?  formatCurrency(Number(metrics?.profitYesterday || 0)): Currency(Number(metrics?.profitYesterday || 0))}`,
       icon: Banknote,
       iconWrapper: "md:bg-[#f4f8f8] md:text-slate-500 bg-[#0B7A75] text-white",
       cardClass: "bg-[#0B7A75] md:bg-white border-[#6DAFAC] text-white",
@@ -29,8 +40,8 @@ export default async function DashboardMetrics() {
     },
     {
       title: "Money In",
-      value: formatCurrency(Number(metrics?.TotalMoneyIn || 0)),
-      previousValue: `Yesterday: ${formatCurrency(Number(metrics?.moneyInYesterday || 0))}`,
+      value: moneyIn < million ? (formatCurrency(Number(metrics?.TotalMoneyIn || 0))) : (Currency(Number(metrics?.TotalMoneyIn || 0))),
+      previousValue: `Yesterday: ${moneyIn < million ? formatCurrency(Number(metrics?.moneyInYesterday || 0)): Currency(Number(metrics?.moneyInYesterday))}`,
       icon: TrendingUp,
       iconWrapper: "bg-[#e4f5ed] text-[#02ad5e]",
       cardClass: "bg-white",
@@ -40,8 +51,8 @@ export default async function DashboardMetrics() {
     },
     {
       title: "Money Out",
-      value: formatCurrency(Number(metrics?.totalMoneyOut || 0)),
-      previousValue: `Yesterday: ${formatCurrency(Number(metrics?.moneyOutYesterday || 0))}`,
+      value: moneyIn < million ? (formatCurrency(Number(metrics?.totalMoneyOut || 0))) : Currency(Number(metrics?.totalMoneyOut || 0)),
+      previousValue: `Yesterday: ${moneyIn < million ? formatCurrency(Number(metrics?.moneyOutYesterday || 0)) : Currency(Number(metrics?.moneyOutYesterday || 0))}`,
       icon: TrendingDown,
       iconWrapper: "bg-[#f9e6e8] text-[#d01527]",
       cardClass: "bg-white",

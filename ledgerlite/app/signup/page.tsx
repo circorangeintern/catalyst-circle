@@ -3,6 +3,8 @@ import React, { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { sendGAEvent } from "@next/third-parties/google";
+
 
 import {
   CheckSquare,
@@ -583,7 +585,7 @@ function CreateAccountScreen({
         </p>
       )}
 
-      <PrimaryButton onClick={handleSubmit} disabled={loading || !isValid}>
+      <PrimaryButton onClick={() => {handleSubmit(); sendGAEvent({ event: "buttonClicked", value: "users_signup" }); }} disabled={loading || !isValid}>
         {loading ? "Creating Account..." : "Continue"}
       </PrimaryButton>
 

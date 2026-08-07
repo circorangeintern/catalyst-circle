@@ -53,16 +53,14 @@ export default function SideNav() {
       </button>
 
       <div
-        className={`fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className={`fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
         onClick={() => setIsOpen(false)}
       />
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-62 max-w-70 transform overflow-y-auto border-r border-slate-200 bg-white px-5 py-6 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-62 max-w-70 transform overflow-y-auto border-r border-slate-200 bg-white px-5 py-6 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between gap-3">
           {/* Logo */}
@@ -149,11 +147,10 @@ export default function SideNav() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${
-                      isActive
+                    className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${isActive
                         ? "bg-brand-primary/15 text-brand-primary"
                         : "text-slate-700 hover:bg-slate-100 hover:text-brand-primary"
-                    }`}
+                      }`}
                     onClick={() => setIsOpen(false)}
                   >
                     <span
@@ -176,11 +173,10 @@ export default function SideNav() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${
-                        isActive
+                      className={`flex items-center gap-3 rounded-2xl px-3 py-3 font-medium transition ${isActive
                           ? "bg-brand-primary/15 text-brand-primary"
                           : "text-slate-700 hover:bg-slate-100 hover:text-brand-primary"
-                      }`}
+                        }`}
                       onClick={() => setIsOpen(false)}
                     >
                       <span

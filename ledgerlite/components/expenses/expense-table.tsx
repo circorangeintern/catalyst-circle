@@ -90,7 +90,7 @@ export default function ExpenseTable({
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-[#0b7a75]/10 px-3 py-1 text-sm font-semibold text-[#0b7a75]">
+                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary">
                       {item.category}
                     </span>
                   </td>
@@ -108,7 +108,7 @@ export default function ExpenseTable({
                         type="button"
                         onClick={() => onView(item)}
                         disabled={isDeleting}
-                        className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-[#0b7a75]/5 hover:text-[#0b7a75] disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition hover:bg-brand-primary/5 hover:text-brand-primary disabled:opacity-50 cursor-pointer"
                         title="View details"
                       >
                         <Eye className="h-4 w-4" />

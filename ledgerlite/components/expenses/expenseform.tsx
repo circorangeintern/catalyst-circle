@@ -1,21 +1,50 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { X, Plus, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { sendGAEvent } from "@next/third-parties/google";
 
 interface ExpenseFormProps {
-  onAddExpense?: (data: { description: string; category: string; amount: number }) => Promise<void>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+  onAddExpense?: (data: {
+    description: string;
+    category: string;
+    amount: number;
+  }) => Promise<void>;
 }
 
-export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
+export default function ExpenseForm({
+  open,
+  onOpenChange,
+  hideTrigger = false,
+  onAddExpense,
+}: ExpenseFormProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = typeof open === "boolean" ? open : internalOpen;
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState(0);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (typeof open === "boolean" && open !== internalOpen) {
+      setInternalOpen(open);
+    }
+  }, [open]);
+
+  const handleOpen = (value: boolean) => {
+    if (typeof onOpenChange === "function") {
+      onOpenChange(value);
+    }
+    if (typeof open !== "boolean") {
+      setInternalOpen(value);
+    }
+  };
 
   function resetForm() {
     setDescription("");
@@ -36,7 +65,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
         if (onAddExpense) {
           await onAddExpense({ description, category, amount });
         } else {
-          const res = await fetch("api/routes/expenses", {
+          const res = await fetch("/api/routes/expenses", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -50,7 +79,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
           router.refresh();
         }
         toast.success("Expense recorded successfully!");
-        setOpen(false);
+        handleOpen(false);
         resetForm();
       } catch (err: any) {
         console.error("Save expense error:", err);
@@ -61,24 +90,26 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
 
   return (
     <div className="px-4 py-6">
-      <div>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="inline-flex items-center justify-center rounded-full bg-brand-primary px-2 md:px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#09615e] focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
-        >
-          <Plus size={18} />
-          <span className="px-1">Add</span>
-          Expense
-        </button>
-      </div>
+      {!hideTrigger && (
+        <div>
+          <button
+            type="button"
+            onClick={() => handleOpen(true)}
+            className="inline-flex items-center justify-center rounded-full bg-brand-primary px-2 md:px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
+          >
+            <Plus size={18} />
+            <span className="px-1">Add</span>
+            Expense
+          </button>
+        </div>
+      )}
 
-      {open && (
+      {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             aria-hidden="true"
-            onClick={() => !isPending && setOpen(false)}
+            onClick={() => !isPending && handleOpen(false)}
           />
 
           <div
@@ -88,14 +119,16 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
             <div className="transform rounded-3xl transition duration-300 ease-out scale-100 opacity-100">
               <div className="flex items-start justify-between border-b border-slate-200 px-6 py-5">
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900">Add Expense</h2>
+                  <h2 className="text-xl font-semibold text-slate-900">
+                    Add Expense
+                  </h2>
                   <p className="mt-1 text-sm text-slate-600">
                     Fill description, category, and amount to save an expense.
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => !isPending && setOpen(false)}
+                  onClick={() => !isPending && handleOpen(false)}
                   className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer disabled:opacity-50"
                   disabled={isPending}
                   aria-label="Close"
@@ -117,7 +150,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-[#0b7a75] focus:ring-2 focus:ring-[#0b7a75]/20"
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                     disabled={isPending}
                   />
                 </div>
@@ -136,7 +169,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
                       value={category}
                       placeholder="Category"
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-[#0b7a75] focus:ring-2 focus:ring-[#0b7a75]/20"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                       required
                       disabled={isPending}
                     />
@@ -167,7 +200,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
                     type="button"
                     onClick={() => {
                       resetForm();
-                      setOpen(false);
+                      handleOpen(false);
                     }}
                     className="inline-flex justify-center rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 cursor-pointer"
                     disabled={isPending}
@@ -176,7 +209,14 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps) {
                   </button>
                   <button
                     type="submit"
-                    className="inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#09615e] cursor-pointer disabled:opacity-75"
+                    onClick={() =>
+                      sendGAEvent({
+                        event: "button_clicked",
+                        value: "added_expense",
+                      })
+                    }
+
+                    className="inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-primary cursor-pointer disabled:opacity-75"
                     disabled={isPending}
                   >
                     {isPending ? (

@@ -4,11 +4,38 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { X, Plus, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { sendGAEvent } from "@next/third-parties/google";
 
-export default function SalesForm() {
+interface SalesFormProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+}
+
+export default function SalesForm({
+  open,
+  onOpenChange,
+  hideTrigger = false,
+}: SalesFormProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = typeof open === "boolean" ? open : internalOpen;
+
+  useEffect(() => {
+    if (typeof open === "boolean" && open !== internalOpen) {
+      setInternalOpen(open);
+    }
+  }, [open]);
+
+  const handleOpen = (value: boolean) => {
+    if (typeof onOpenChange === "function") {
+      onOpenChange(value);
+    }
+    if (typeof open !== "boolean") {
+      setInternalOpen(value);
+    }
+  };
+
   // Form input states
   const [itemType, setItemType] = useState<"tracked" | "custom">("tracked");
   const [selectedItemId, setSelectedItemId] = useState("");
@@ -21,12 +48,11 @@ export default function SalesForm() {
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  
 
   // Fetch user's inventory items to choose from
   useEffect(() => {
-    if (!open) return;
-    
+    if (!isOpen) return;
+
     setLoadingProducts(true);
     fetch("/api/routes/item")
       .then((res) => res.json())
@@ -50,7 +76,7 @@ export default function SalesForm() {
       .finally(() => {
         setLoadingProducts(false);
       });
-  }, [open]);
+  }, [isOpen]);
 
   function resetForm() {
     setItemType("tracked");
@@ -98,10 +124,10 @@ export default function SalesForm() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        setOpen(false);
+        handleOpen(false);
         resetForm();
         router.refresh(); // Refresh Next.js Server Component data
-        toast.success("successfully recorded sales")
+        toast.success("successfully recorded sales");
       } else {
         setErrorMsg(result.message || "Failed to record sale.");
       }
@@ -115,27 +141,29 @@ export default function SalesForm() {
 
   return (
     <div className="px-4 py-6">
-      <div>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-3 py-3 md:px-5 md:py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition duration-200 hover:bg-brand-primary hover:shadow-xl hover:shadow-brand-primary/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
-        >
-          <Plus
-            size={18}
-            className="transition-transform duration-300 group-hover:rotate-90"
-          />
-          <span>Add</span>
-          Sales
-        </button>
-      </div>
+      {!hideTrigger && (
+        <div>
+          <button
+            type="button"
+            onClick={() => handleOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-3 py-3 md:px-5 md:py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition duration-200 hover:bg-brand-primary hover:shadow-xl hover:shadow-brand-primary/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 cursor-pointer"
+          >
+            <Plus
+              size={18}
+              className="transition-transform duration-300 group-hover:rotate-90"
+            />
+            <span>Add</span>
+            Sales
+          </button>
+        </div>
+      )}
 
-      {open && (
+      {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 animate-in fade-in duration-150">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300"
             aria-hidden="true"
-            onClick={() => !submitting && setOpen(false)}
+            onClick={() => !submitting && handleOpen(false)}
           />
 
           <div
@@ -155,7 +183,7 @@ export default function SalesForm() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => !submitting && setOpen(false)}
+                  onClick={() => !submitting && handleOpen(false)}
                   disabled={submitting}
                   className="rounded-full p-2 text-slate-500 transition duration-200 hover:bg-slate-100 hover:text-slate-900 hover:rotate-90  cursor-pointer disabled:opacity-50"
                   aria-label="Close"
@@ -216,7 +244,7 @@ export default function SalesForm() {
                   >
                     Item
                   </label>
-                  
+
                   {itemType === "tracked" && products.length > 0 ? (
                     <select
                       id="item"
@@ -263,7 +291,7 @@ export default function SalesForm() {
                       placeholder="0"
                       // min={1}
                       value={quantity}
-                      onChange={(e) => setQuantity((e.target.value))}
+                      onChange={(e) => setQuantity(e.target.value)}
                       className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition duration-200 focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:shadow-md  "
                       disabled={submitting}
                       required
@@ -288,7 +316,7 @@ export default function SalesForm() {
                       // min={0}
                       // step={0.01}
                       value={unitPrice}
-                      onChange={(e) => setUnitPrice((e.target.value))}
+                      onChange={(e) => setUnitPrice(e.target.value)}
                       className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition duration-200 focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:shadow-md "
                       disabled={submitting}
                       required
@@ -306,7 +334,7 @@ export default function SalesForm() {
                       type="button"
                       onClick={() => {
                         resetForm();
-                        setOpen(false);
+                        handleOpen(false);
                       }}
                       disabled={submitting}
                       className="inline-flex justify-center rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-100 hover:border-slate-400 active:scale-95 cursor-pointer  disabled:opacity-50"
@@ -316,6 +344,13 @@ export default function SalesForm() {
                     <button
                       type="submit"
                       disabled={submitting}
+                      onClick={() =>
+                        sendGAEvent({
+                          event: "button_clicked",
+                          value: "added_sales",
+                        })
+                      }
+
                       className="inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition duration-200 hover:bg-brand-primary hover:shadow-xl hover:shadow-brand-primary/30 active:scale-95 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                     >
                       {submitting ? (
@@ -337,4 +372,3 @@ export default function SalesForm() {
     </div>
   );
 }
-

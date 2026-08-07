@@ -23,7 +23,7 @@ export function MetricsSkeleton() {
 
 export function LowStockSkeleton() {
   return (
-    <div className="border border-slate-200 shadow-sm rounded-2xl p-6 bg-white w-full md:max-w-md my-5 min-h-[220px]">
+    <div className="border border-slate-200 shadow-sm rounded-2xl p-6 bg-white w-full md:max-w-md my-5 min-h-55">
       <div className="flex justify-between items-center mb-6">
         <Shimmer className="h-5 w-24" />
         <Shimmer className="h-5 w-16 rounded-xl" />

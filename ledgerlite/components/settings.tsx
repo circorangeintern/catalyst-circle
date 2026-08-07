@@ -159,7 +159,7 @@ function SecuritySection() {
     confirmPassword.trim() &&
     confirmPassword === newPassword;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSubmitAttempted(true);
 
     if (!isFormValid) {
@@ -167,15 +167,27 @@ function SecuritySection() {
     }
 
     setLoading(true);
-    // Simulate updating password securely
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/protected/settings/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        toast.success("Security credentials updated successfully!");
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setSubmitAttempted(false);
+      } else {
+        toast.error(result.error || "Failed to update security credentials.");
+      }
+    } catch (err) {
+      toast.error("Network error: Could not save password changes.");
+    } finally {
       setLoading(false);
-      toast.success("Security credentials updated successfully!");
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setSubmitAttempted(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -352,7 +364,7 @@ function FeedbackSection() {
   const showMessageError = submitAttempted && messageError;
   const isFormValid = !subjectError && !messageError;
 
-  const handleSend = () => {
+  const handleSend = async () => {
     setSubmitAttempted(true);
 
     if (!isFormValid) {
@@ -360,14 +372,26 @@ function FeedbackSection() {
     }
 
     setLoading(true);
-    // Simulate API feedback sending
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/protected/settings/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, message }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        toast.success("Feedback submitted successfully! Thank you.");
+        setSubject("");
+        setMessage("");
+        setSubmitAttempted(false);
+      } else {
+        toast.error(result.error || "Failed to submit feedback.");
+      }
+    } catch (err) {
+      toast.error("Network error: Could not submit feedback.");
+    } finally {
       setLoading(false);
-      toast.success("Feedback submitted successfully! Thank you.");
-      setSubject("");
-      setMessage("");
-      setSubmitAttempted(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -586,27 +610,36 @@ export default function LedgerLiteSettings() {
   const [activeSection, setActiveSection] =
     useState<SettingsSection>("security");
   const [deleteStep, setDeleteStep] = useState<DeleteFlowStep>("none");
+  const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
   const [deleting, setDeleting] = useState(false);
 
-  const closeDeleteFlow = () => setDeleteStep("none");
+  const closeDeleteFlow = () => {
+    setDeleteStep("none");
+    setConfirmPasswordVal("");
+  };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     setDeleting(true);
-    // Simulate account deletion transition: clear cookie via logout api and redirect
-    setTimeout(async () => {
-      try {
-        await fetch("/api/protected/logout", { method: "POST" });
+    try {
+      const res = await fetch("/api/protected/settings/account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: confirmPasswordVal }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
         toast.success("Account successfully deleted.");
         router.push("/signup");
         router.refresh();
-      } catch (err) {
-        console.error(err);
-        toast.error("An error occurred during account deletion.");
-      } finally {
-        setDeleting(false);
-        closeDeleteFlow();
+      } else {
+        toast.error(result.error || "Failed to delete account.");
+        setDeleteStep("password"); // Send back to password verification if failed
       }
-    }, 1500);
+    } catch (err) {
+      toast.error("Network error: Could not delete account.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -630,7 +663,10 @@ export default function LedgerLiteSettings() {
       {deleteStep === "password" && (
         <ConfirmPasswordModal
           onCancel={closeDeleteFlow}
-          onContinue={() => setDeleteStep("confirm")}
+          onContinue={(pw) => {
+            setConfirmPasswordVal(pw);
+            setDeleteStep("confirm");
+          }}
         />
       )}
       {deleteStep === "confirm" && (

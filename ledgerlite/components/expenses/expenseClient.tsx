@@ -194,8 +194,8 @@ export default function ExpenseClient({
           </div>
           <div className="">
             <div className="grid gap-10 px-4 md:grid-cols-2 lg:grid-cols-4">
-              <div className="max-w-sm rounded-3xl border border-[#6DAFAC] bg-[#f4faf9] p-6 shadow-sm">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0b7a75]/10 text-[#0b7a75]">
+              <div className="max-w-sm rounded-3xl border border-[#6DAFAC]  p-6 shadow-sm">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
                   <ShoppingBag size={20} />
                 </div>
                 <p className="mt-5 text-xs uppercase tracking-[0.24em] text-slate-500">
@@ -216,7 +216,7 @@ export default function ExpenseClient({
               </p>
               {optimisticExpenses.length === 0 ? (
                 <div className="flex flex-col items-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-[#0b7a75]/10 text-[#0b7a75]">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-primary/10 text-brand-primary">
                     <ShoppingBag size={22} />
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-slate-900">
@@ -225,6 +225,7 @@ export default function ExpenseClient({
                   <p className="mt-2 text-sm text-slate-500">
                     When you save an expense, it will appear in this section for quick review.
                   </p>
+                  <ExpenseForm />
                 </div>
               ) : (
                 <div className="py-5">

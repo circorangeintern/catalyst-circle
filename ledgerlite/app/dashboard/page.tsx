@@ -1,24 +1,33 @@
-import SideNav from "@/components/sideNav";
-import UserNav from "@/components/userNav";
+import SideNav from "../../components/sideNav";
+import UserNav from "../../components/userNav";
 import { getCurrentUser } from "../lib/authhelper";
+import { getMetrics } from "../lib/metrics";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ShoppingBag, Receipt, Package, Loader2 } from "lucide-react";
 import { Suspense } from "react";
 import DashboardMetrics from "./components/dashboardMetrices";
-import { LowStockSkeleton, MetricsSkeleton, TransactionsSkeleton } from "./components/skeletons";
+import {
+  LowStockSkeleton,
+  MetricsSkeleton,
+  TransactionsSkeleton,
+} from "./components/skeletons";
 import LowStockAlerts from "./components/lowStockAlerts";
 import RecentTransactions from "./components/recentTransactions";
-import BarChart from "@/components/dashboardbarchart";
-import WelcomeGreeting from "@/components/welcomeGreeting";
-
+import BarChart from "../../components/dashboardbarchart";
+import WelcomeGreeting from "../../components/welcomeGreeting";
+import SalesModalCard from "../../components/SalesModalCard";
+import ExpenseModalCard from "../../components/ExpenseModalCard";
+import InventoryModalCard from "../../components/InventoryModalCard";
 
 export default async function Dashboard() {
-  
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
 
-  const { name, buisnessName } = user
+  const { name, buisnessName } = user;
+  const metrics = await getMetrics();
+  const lowstock = metrics?.lowStock || [];
+  const count = metrics?.allLowStockCount || 0;
 
   // Pre-calculate server time greeting for initial paint
   const hours = new Date().getHours();
@@ -46,7 +55,6 @@ export default async function Dashboard() {
             <div>
               <WelcomeGreeting name={name} initialGreeting={initialGreeting} />
               <p className="text-slate-600 dark:text-slate-400">
-              
                 Here’s a quick look at how your business today
               </p>
             </div>
@@ -69,48 +77,21 @@ export default async function Dashboard() {
                 Quick Actions
               </p>
 
-              <div className="flex justify-between items-center gap-2 md:space-x-5">
-                <div className="py-2  flex-1">
-                  <Link
-                    className="flex flex-col items-center text-white bg-[#0B7A75] rounded-2xl px-4  py-5  md:py-20 hover:opacity-80 transition duration-150"
-                    href="/sales"
-                  >
-                    <ShoppingBag className="space-y-2" size={15} />
-                    <span className="flex items-center gap-2 py-2 text-xs md:text-sm">
-                      <span className="hidden md:block">Add</span> Sales
-                    </span>
-                  </Link>
+              <div className="flex items-stretch gap-2 md:space-x-5">
+                <div className="flex-1">
+                  <SalesModalCard />
                 </div>
-                <div className="py-2 flex-1">
-                  <Link
-                    className="flex flex-col items-center text-white bg-[#0B7A75] rounded-2xl px-4 py-5 md:py-20 hover:opacity-80 transition duration-150"
-                    href="/expense"
-                  >
-                    <Receipt size={15} />
-                    <span className="flex items-center gap-2 py-2 text-xs md:text-sm">
-                      <span className="hidden md:block">Add</span> Expense
-                    </span>
-                  </Link>
+                <div className="flex-1">
+                  <ExpenseModalCard />
                 </div>
-                <div className="py-2 flex-1">
-                  <Link
-                    className="flex flex-col items-center text-white bg-[#0B7A75] rounded-2xl px-4 py-5 md:py-20 hover:opacity-80 transition duration-150"
-                    href="/inventory"
-                  >
-                    <Package size={15} />
-                    <span className="flex items-center gap-2 py-2 text-xs md:text-sm">
-                      <span className="hidden md:block">Add</span> Inventory
-                    </span>
-                  </Link>
+                <div className="flex-1">
+                  <InventoryModalCard />
                 </div>
               </div>
             </div>
 
             <div>
-              {/* Low stock alerts - Streamed with Suspense */}
-              <Suspense fallback={<LowStockSkeleton />}>
-                <LowStockAlerts />
-              </Suspense>
+              <LowStockAlerts lowstock={lowstock} count={count} />
             </div>
           </div>
           <div>
@@ -118,8 +99,7 @@ export default async function Dashboard() {
               fallback={
                 <p className="mt-10 flex items-center justify-center animate-spin">
                   {" "}
-                  <Loader2 className="text-teal-600"/> 
-                  
+                  <Loader2 className="text-teal-600" />
                 </p>
               }
             >

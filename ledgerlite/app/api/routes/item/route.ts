@@ -12,7 +12,7 @@ export async function GET() {
         }
 
 
-        const allProducts = await prisma.item.findMany({ where: { userId }, orderBy: { createdAt: "asc" } })
+        const allProducts = await prisma.item.findMany({ where: { userId }, orderBy: { createdAt: "desc" } })
 
         if (allProducts.length === 0) {
             return NextResponse.json({
