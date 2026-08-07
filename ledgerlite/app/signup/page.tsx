@@ -426,6 +426,16 @@ function CreateAccountScreen({
     onContinue();
   };
 
+  const handleClick = () => {
+    sendGAEvent({
+      event: "signup_click",
+      action: "user_signup",
+      label: "signup_button"
+    });
+
+    handleSubmit();
+  };
+
   return (
     <div className="w-full max-w-sm">
       <Logo />
@@ -585,7 +595,7 @@ function CreateAccountScreen({
         </p>
       )}
 
-      <PrimaryButton onClick={() => {handleSubmit(); sendGAEvent({ event: "buttonClicked", value: "users_signup" }); }} disabled={loading || !isValid}>
+      <PrimaryButton onClick={handleClick} disabled={loading || !isValid}>
         {loading ? "Creating Account..." : "Continue"}
       </PrimaryButton>
 

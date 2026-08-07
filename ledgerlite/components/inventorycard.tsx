@@ -195,18 +195,18 @@ export default function InventoryCard({ items = [], onRefresh }: InventoryCardPr
               return (
                 <tr key={item.id} className="transition hover:bg-slate-50">
                   <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-slate-900">{item.name}</p>
+                    <p className="text-[10px] md:text-sm font-medium text-slate-900">{item.name}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary">
+                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-[10px] md:text-sm font-semibold text-brand-primary">
                       {item.currentStock}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-sm text-slate-700">{item.lowStock}</p>
+                    <p className="text-[10px] md:text-sm text-slate-700">{item.lowStock}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-xs text-slate-500">{formattedDate}</p>
+                    <p className="text-[10px] md:text-xs text-slate-500">{formattedDate}</p>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">

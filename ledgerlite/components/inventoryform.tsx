@@ -286,8 +286,9 @@ export default function InventoryForm({
                     disabled={submitting}
                     onClick={() =>
                       sendGAEvent({
-                        event: "button_clicked",
-                        value: "added_product",
+                        event: "saveProduct_clicked",
+                        action: "user_savedProduct",
+                        label: "saveProduct_button",
                       })
                     }
 

@@ -346,8 +346,9 @@ export default function SalesForm({
                       disabled={submitting}
                       onClick={() =>
                         sendGAEvent({
-                          event: "button_clicked",
-                          value: "added_sales",
+                          event: "saveSales_clicked",
+                          action: "user_savedSales",
+                          label: "saveSales_button"
                         })
                       }
 

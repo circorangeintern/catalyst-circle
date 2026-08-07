@@ -211,8 +211,9 @@ export default function ExpenseForm({
                     type="submit"
                     onClick={() =>
                       sendGAEvent({
-                        event: "button_clicked",
-                        value: "added_expense",
+                        event: "saveExpense_clicked",
+                        action: "user_savedExpense",
+                        label: "saveExpense_button",
                       })
                     }
 

@@ -85,22 +85,22 @@ export default function ExpenseTable({
               return (
                 <tr key={item.id} className="transition hover:bg-slate-50">
                   <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-[10px] md:text-sm font-medium text-slate-900">
                       {descriptionText}
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-sm font-semibold text-brand-primary">
+                    <span className="inline-flex items-center justify-center rounded-lg bg-brand-primary/10 px-3 py-1 text-[10px] md:text-sm font-semibold text-brand-primary">
                       {item.category}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-[10px] md:text-sm font-semibold text-slate-900">
                       ₦{amountValue.toLocaleString()}
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-xs text-slate-500">{formattedDate}</p>
+                    <p className="text-[10px] md:text-xs text-slate-500">{formattedDate}</p>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">

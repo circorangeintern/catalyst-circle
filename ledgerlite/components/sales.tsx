@@ -80,7 +80,7 @@ export function SalesClient({
             </div>
             {/* sales. history */}
             <aside
-              className="rounded-4xl my-10 border border-[#6DAFAC] bg-white/95 p-6 shadow-lg transition-all  hover:shadow-xl hover:border-brand-primary animate-in fade-in slide-in-from-bottom duration-500"
+              className="rounded-4xl my-10 border border-[#6DAFAC] bg-white/95 p-6  shadow-lg transition-all  hover:shadow-xl hover:border-brand-primary animate-in fade-in slide-in-from-bottom duration-500"
               style={{ animationFillMode: "both", animationDelay: "200ms" }}
             >
               <h2 className="text-xl font-semibold text-[#032523] ">
@@ -90,7 +90,7 @@ export function SalesClient({
                 Your sales appears here once they are saved.
               </p>
               {sales.length === 0 ? (
-                <div className="flex flex-col items-center mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                <div className="flex flex-col items-center mt-6 rounded-3xl border border-dashed border-slate-300   bg-slate-50 p-8 text-center">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-primary/10 text-brand-primary">
                     <ReceiptText size={22} />
                   </div>

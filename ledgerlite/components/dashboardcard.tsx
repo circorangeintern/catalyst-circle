@@ -110,13 +110,13 @@ export default function DashboardCard({
               return (
                 <tr key={item.id} className="transition hover:bg-slate-50/50">
                   <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-[10px] md:text-sm font-medium text-slate-900">
                       {item.transaction}
                     </p>
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center justify-center rounded-lg px-3 py-1 text-xs font-semibold ${
+                      className={`inline-flex items-center justify-center rounded-lg px-3 py-1 text-[10px] md:text-xs font-semibold ${
                         isSale
                           ? "bg-[#e4f5ed] text-[#02ad5e]"
                           : "bg-[#f9e6e8] text-[#d01527]"
@@ -127,7 +127,7 @@ export default function DashboardCard({
                   </td>
                   <td className="px-6 py-4">
                     <p
-                      className={`text-sm font-bold ${
+                      className={`text-[10px] md:text-sm font-bold ${
                         isSale ? "text-[#02ad5e]" : "text-[#d01527]"
                       }`}
                     >
@@ -135,7 +135,7 @@ export default function DashboardCard({
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-xs text-slate-500">{item.timestamp}</p>
+                    <p className=" text-[10px] md:text-xs text-slate-500">{item.timestamp}</p>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">

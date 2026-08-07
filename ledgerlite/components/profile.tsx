@@ -127,7 +127,7 @@ function ToggleRow({
       >
         <span
           className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-            checked ? "translate-x-6" : "translate-x-1"
+            checked ? "-translate-x-6" : "translate-x-1"
           }`}
         />
       </button>
