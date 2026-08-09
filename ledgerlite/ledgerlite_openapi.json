@@ -1,0 +1,277 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LedgerLite API Documentation",
+    "description": "API routes for LedgerLite accounting, inventory tracking, authentication, settings, and custom cashflow analytics.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/api/sign-up": {
+      "post": {
+        "summary": "User Registration",
+        "description": "Creates a new merchant account in the database.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "buisnessName", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "buisnessName": { "type": "string", "example": "Johns Bakery" },
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "securePassword123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created successfully. OTP verification sent." },
+          "400": { "description": "Invalid input or user already exists." }
+        }
+      }
+    },
+    "/api/sign-in": {
+      "post": {
+        "summary": "User Login",
+        "description": "Authenticates user credentials and sets a secure HTTP-Only session cookie.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "securePassword123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Logged in successfully. Session cookie set." },
+          "401": { "description": "Incorrect email or password." }
+        }
+      }
+    },
+    "/api/verify-otp": {
+      "post": {
+        "summary": "Verify Registration OTP",
+        "description": "Verifies the email verification token code code to activate the user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "otp"],
+                "properties": {
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "otp": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Account verified successfully." },
+          "400": { "description": "Expired or incorrect OTP token." }
+        }
+      }
+    },
+    "/api/protected/logout": {
+      "post": {
+        "summary": "Sign Out User",
+        "description": "Drops active user database sessions and clears client session cookies.",
+        "responses": {
+          "200": { "description": "Logged out successfully." }
+        }
+      }
+    },
+    "/api/protected/profile": {
+      "get": {
+        "summary": "Get Profile Data",
+        "description": "Returns current logged in user credentials and details.",
+        "responses": {
+          "200": { "description": "Profile data retrieved successfully." },
+          "403": { "description": "Unauthorized access." }
+        }
+      },
+      "patch": {
+        "summary": "Update Profile Details",
+        "description": "Updates full name, business name, or base64 profile picture avatar.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe Jr." },
+                  "buisnessName": { "type": "string", "example": "Johns Organic Bread" },
+                  "image": { "type": "string", "description": "Base64 encoded image string", "example": "data:image/png;base64,iVBORw0KG..." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated successfully." },
+          "403": { "description": "Unauthorized." }
+        }
+      }
+    },
+    "/api/protected/settings/password": {
+      "post": {
+        "summary": "Update Password",
+        "description": "Verifies current password and updates it with a new hashed value.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["currentPassword", "newPassword"],
+                "properties": {
+                  "currentPassword": { "type": "string", "example": "securePassword123" },
+                  "newPassword": { "type": "string", "example": "brandNewSecret999" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password updated successfully." },
+          "400": { "description": "Incorrect current password or new password length insufficient." }
+        }
+      }
+    },
+    "/api/routes/item": {
+      "get": {
+        "summary": "Get Inventory Items",
+        "description": "Fetches all inventory products owned by the user, sorted descending by creation date.",
+        "responses": {
+          "200": { "description": "Successfully retrieved products." },
+          "404": { "description": "No products found." }
+        }
+      },
+      "post": {
+        "summary": "Create Inventory Item",
+        "description": "Creates a new item tracked in the stock system.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "currentStock", "lowStock"],
+                "properties": {
+                  "name": { "type": "string", "example": "Premium Rice Bag" },
+                  "currentStock": { "type": "integer", "example": 25 },
+                  "lowStock": { "type": "integer", "example": 5 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product created successfully." },
+          "400": { "description": "Product name already exists or invalid values." }
+        }
+      }
+    },
+    "/api/routes/sales": {
+      "get": {
+        "summary": "Get Sales List",
+        "description": "Retrieves the logged sales records.",
+        "responses": {
+          "200": { "description": "Sales history retrieved successfully." }
+        }
+      },
+      "post": {
+        "summary": "Record Sale",
+        "description": "Logs a new transaction sale. Deducts current inventory count if item is tracked.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["quantity", "unitPrice"],
+                "properties": {
+                  "itemId": { "type": "string", "description": "Prisma item ID if tracked in inventory", "example": "cuid12345" },
+                  "customItemName": { "type": "string", "description": "Custom descriptor if item is not tracked", "example": "Untracked Soda bottle" },
+                  "quantity": { "type": "integer", "example": 2 },
+                  "unitPrice": { "type": "number", "example": 1200.00 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Sales transaction recorded successfully." },
+          "400": { "description": "Stock count exceeded or invalid parameter bounds." }
+        }
+      }
+    },
+    "/api/routes/sales/{salesId}": {
+      "delete": {
+        "summary": "Delete / Cancel Sale",
+        "description": "Deletes the sale log. Automatically restores inventory stock counts for tracked items.",
+        "parameters": [
+          {
+            "name": "salesId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Sale cancelled and inventory restored." }
+        }
+      }
+    },
+    "/api/routes/expenses": {
+      "get": {
+        "summary": "Get Expenses List",
+        "description": "Retrieves the list of recorded business expenditures.",
+        "responses": {
+          "200": { "description": "Expenses logs returned." }
+        }
+      },
+      "post": {
+        "summary": "Record Expense",
+        "description": "Records a business expense.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["amount", "category"],
+                "properties": {
+                  "amount": { "type": "number", "example": 3500.50 },
+                  "category": { "type": "string", "example": "Utilities" },
+                  "description": { "type": "string", "example": "August electricity bill" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Expense logged successfully." }
+        }
+      }
+    }
+  }
+}
